@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name=referrer content=no-referrer>
+    <title>留言板</title>
+    <link rel="stylesheet" href="dl.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
+    <link rel="shortcut icon" href="https://q2.qlogo.cn/headimg_dl?dst_uin=2726225713&spec=100" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        header {
+            background: #C0E1FF;
+            height: 70px;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: inset 0px 1px 6px #ECF3F5;
+        }
+
+        header .searchs input {
+            width: 100%;
+            height: 42px;
+            background: #F9F0DA;
+            padding-left: 15px;
+        }
+
+        header .searchs button {
+            height: 26px;
+            width: 26px;
+            position: absolute;
+            top: 22px;
+            right: 27px;
+            background: #F15B42;
+            cursor: pointer;
+            color: #FFF;
+            font-size: 20px;
+        }
+
+        header .searchs input,
+        header .searchs button {
+            border: none;
+            outline: none;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        .add {
+            background: #D2E9FF;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add .center>* {
+            margin: 10px 0;
+        }
+
+        .add .center span {
+            margin: 0 4px;
+            color: #222;
+        }
+
+        .add .center input {
+            width: 200px;
+            height: 18px;
+            color: #888;
+            border: 1px solid #C5E2FF;
+            background: #FBFBFB;
+            outline: 0;
+            box-shadow: inset 0px 1px 6px #ECF3F5;
+        }
+
+        .add .center button {
+            width: 100px;
+            border: none;
+            color: #FFF;
+            border-radius: 5%;
+            margin: 10px 14px;
+            background: #66C1E4;
+            padding: 10px 30px 10px 30px;
+            box-shadow: 1px 1px 1px #4C6E91;
+            -webkit-box-shadow: 1px 1px 1px #4C6E91;
+            -moz-box-shadow: 1px 1px 1px #4C6E91;
+            text-shadow: 1px 1px 1px #5079A3;
+        }
+
+        ul {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            background: #e1f0ff;
+            padding-bottom: 20px;
+            padding: 0;
+        }
+
+        ul li {
+            width: 440px;
+            padding: 10px;
+            min-width: 200px;
+            list-style: none;
+            margin: 20px 0 0 0;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px 5px #66c1e4;
+            position: relative;
+        }
+
+        @media screen and (max-width: 500px) {
+
+            /* 小于500 */
+            ul li {
+                width: 330px;
+            }
+        }
+
+        ul li.itemLiuyan {
+            color: #222;
+            font-size: 26px;
+            position: relative;
+        }
+
+        ul li svg {
+            transform: translateY(4px);
+        }
+
+        ul li .itemOne {
+            color: #00b4fc;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        ul li .itemOne .itemName {
+            font-size: 16px;
+        }
+
+        ul li .itemOne .itemTitle {
+            font-size: 16px;
+        }
+
+        ul li .itemContext {
+            font-size: 20px;
+        }
+
+        ul li .itemCreateTime {
+            font-size: 14px;
+        }
+
+        ul li.itemQ {
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
+        ul li.itemQ button {
+            width: 60px;
+            height: 30px;
+            border: none;
+            border-radius: 7px;
+            transition: all 0.8s;
+            background: #EFEFEF;
+            box-shadow: 0px 3px 8px 2px #d7d4d4;
+            font-size: 10px;
+        }
+
+        ul li.itemQ button:hover {
+            background: #ffdba8;
+            box-shadow: 0px 2px 4px 1px #8a8686;
+        }
+
+        ul li.itemQ button:first-of-type {
+            width: 70px;
+        }
+
+        ul li.itemQ button:nth-last-of-type(3) {
+            width: 50px;
+        }
+
+        ul li.itemQ button:last-of-type {
+            width: 50px;
+        }
+
+        ul li svg.last {
+            position: absolute;
+            right: 10px;
+            bottom: 15px;
+        }
+
+        #name {
+            height: 30px;
+        }
+
+        #email {
+            height: 30px;
+        }
+
+        #context {
+            height: 30px;
+        }
+
+        ul li.itemQ input {
+            width: 35px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        #keyword {
+            top: 45px;
+        }
+
+        .access {
+            background: url("https://img1.baidu.com/it/u=4287155272,1108887046&fm=253&fmt=auto&app=120&f=JPEG?w=1422&h=800")
+        }
+
+        .icon {
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+
+<body>
+    <script src="js/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+
+
+    <!--灯笼  -->
+    <div id="dl-all">
+        <div class="deng-box">
+            <div class="deng">
+                <div class="xian"></div>
+                <div class="deng-a">
+                    <div class="deng-b">
+                        <div class="deng-t">春</div>
+                    </div>
+                </div>
+                <div class="shui shui-a">
+                    <div class="shui-c"></div>
+                    <div class="shui-b"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 灯笼2 -->
+        <div class="deng-box1">
+            <div class="deng">
+                <div class="xian"></div>
+                <div class="deng-a">
+                    <div class="deng-b">
+                        <div class="deng-t">节</div>
+                    </div>
+                </div>
+                <div class="shui shui-a">
+                    <div class="shui-c"></div>
+                    <div class="shui-b"></div>
+                </div>
+            </div>
+        </div>
+        <div class="deng-box2">
+            <div class="deng">
+                <div class="xian"></div>
+                <div class="deng-a">
+                    <div class="deng-b">
+                        <div class="deng-t">快</div>
+                    </div>
+                </div>
+                <div class="shui shui-a">
+                    <div class="shui-c"></div>
+                    <div class="shui-b"></div>
+                </div>
+            </div>
+        </div>
+        <div class="deng-box3">
+            <div class="deng">
+                <div class="xian"></div>
+                <div class="deng-a">
+                    <div class="deng-b">
+                        <div class="deng-t">乐</div>
+                    </div>
+                </div>
+                <div class="shui shui-a">
+                    <div class="shui-c"></div>
+                    <div class="shui-b"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 灯笼end -->
+    <audio src="new.mp3" controls style="display: none;" preload="none" id="bgMusic"></audio>
+    <!-- 点赞音效 -->
+    <audio src="medias/dz.mp3" controls style="display: none;" preload="none" id="dzMusic"></audio>
+
+    <div id="app">
+        <div class="access" align="center">
+            <img width="20px" height="20px" src="https://i.328888.xyz/2023/01/12/lpQxq.png" alt="">
+            <span style="color:palevioletred">访问量：</span><span style="color: orchid;">{{count}}</span>
+        </div>
+        <header>
+            <div class="logo">
+                <img src="http://q2.qlogo.cn/headimg_dl?dst_uin=2726225713&spec=100" width="50px" height="50px" alt="">
+            </div>
+            <div class="searchs" align="right">
+                <input type="text" id="searchs" placeholder="查询内容" v-model="keywords">
+                <!-- @keyup.enter按下回车 -->
+                <button type="button" value="查询" @click="search" @keyup.enter="search" id="keyword">&gt;</button>
+            </div>
+        </header>
+
+        <div class="add">
+            <div class="center">
+                <span>名字：</span><input type="text" id="name" placeholder="请输入昵称" maxlength="10"><br>
+                <span>邮箱：</span><input type="text" id="email" placeholder="请输入邮箱" maxlength="100"><br>
+                <span>内容：</span><input type="text" id="context" placeholder="请输入内容" maxlength="1000"><br>
+                <button type="button" value="发布" onclick="addcontexts()">发布</button>
+                <button type="reset" value="重置" onclick="reset()">重置</button>
+            </div>
+        </div>
+
+        <ul>
+            <li class="itemLiuyan">
+                <svg width="40" height="26" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <title>Layer 1</title>
+                        <rect stroke-width="3" id="svg_26" height="2" width="27" y="22.51492" x="12" stroke="#000"
+                            fill="none" />
+                        <rect stroke-width="3" id="svg_27" height="2" width="27" y="1.3209" x="12" stroke="#000"
+                            fill="none" />
+                        <rect stroke-width="3" id="svg_28" height="2" width="27" y="11.91791" x="12.14925" stroke="#000"
+                            fill="none" />
+                        <ellipse ry="1" rx="1" id="svg_29" cy="23.71641" cx="4" stroke-width="3" stroke="#000"
+                            fill="none" />
+                        <ellipse ry="1" rx="1" id="svg_30" cy="2.41791" cx="4" stroke-width="3" stroke="#000"
+                            fill="none" />
+                        <ellipse ry="1" rx="1" id="svg_31" cy="12.89552" cx="4" stroke-width="3" stroke="#000"
+                            fill="none" />
+                    </g>
+                </svg>
+                <span>留言</span>
+            </li>
+            <li v-for="(item,index) in searchList" :key="item.id">
+                <div class="itemOne">
+                    <span class="itemName">{{item.name}}</span>
+                    <span class="itemTitle">{{item.email}}</span>
+                </div>
+                <span class="itemContext">{{item.context}}</span><br><br>
+                <span class="itemCreateTime" style="color: palevioletred;">{{item.address}}</span><br>
+                <span class="itemCreateTime">{{item.createTime}}</span><br>
+                <!-- <img v-show="showIcon" src="ydz.png" width="10px" height="10px" alt="" style="display:inline-block;text-align: right;margin-right: 25px;" v-show="showsvg"> -->
+                <span style="display: block;text-align: right;margin-right: 25px;">{{item.thumbsUp}}</span>
+                <svg class="icon last" aria-hidden="true" @click="thumbs(item.id,index)"  v-bind:id="index">
+                    <use v-bind:xlink:href="arr.includes(item.id) ? styleSvg:styleSvgs"></use>
+                </svg>
+            </li>
+            <li class="itemQ">
+                <button @click="searchAll">首页</button>
+                <button @click="searchPageTop">上一页</button>
+                <div>{{ pagePrint }}</div>
+                <input type="number" v-model:value="page" id="tiaoZhuanInput">
+                <button @click="searchJump(page)">跳转</button>
+                <button @click="searchPagego">下一页</button>
+                <button @click="searchPageBottom">尾页</button>
+            </li>
+        </ul>
+    </div>
+    <!-- 字体图标引入 -->
+    <script src="./font/iconfont.js"></script>
+
+    <script>
+    
+        let key = "589e96f1ebe340e292b9be80d39e5f55"; //这里写你账号的key
+        //初始页数
+        let page = 1;
+        // 返回页数-每页条数
+        let pageSize = 5;
+        //接口地址
+        axios.defaults.baseURL = "https://api.hh2022.cn"
+
+        
+        var app = new Vue({
+            el: "#app",
+            data: {
+                page: 1,
+                searchList: [],
+                pagePrint: '第' + page + '页',
+                thumbsCount:'',
+                showIcon:false,
+                showSvg:true,
+                arrs:[],
+                arr:[],
+                styleSvgs:'#icon-dianzan1',
+                styleSvg:'#icon-dianzan',
+                count: '正在加载..'
+            },
+
+            // //页面加载完自动加载区域
+            mounted() {
+                window.searchAll = this.searchAll;
+                window.addAccessCount = this.addAccessCount;
+                window.initdz = this.initdz;
+            },
+            
+            
+            
+            methods: {
+                thumbs(id,index){
+                    var that = this;
+                     
+                    var star = getCookie("star")
+                    var cArray=star.split(",");
+                    let pd = 0;
+                    for(var i=0;i<cArray.length;i++){
+                        var ids=cArray[i].trim();
+                        if(id == ids){
+                            pd = 1
+                        }
+                    }
+                    //判断是否已点赞
+                    if(pd === 1){
+                        layer.msg("您已经点赞过了！")
+                        return false
+                    }else{
+                    axios({
+                        url:"/main/ThumbsUp/"+id,
+                        methods:'get'
+                    })
+                    .then(function (res){
+                        that.arr.unshift(id)
+                        addCookieById("star",id,365);
+                        document.getElementById("dzMusic").load();
+                        var audio = document.getElementById("dzMusic");
+                        audio.currentTime  = 0;
+                        audio.play();
+                        that.searchReload(page)
+                    })
+                    .error(function(err) {
+
+                    })
+                }
+                
+                
+                },
+                initdz(){
+                    var that = this;
+                    let star = getCookie("star")
+                    var cArray=star.split(",");
+                    for(var i=0;i<cArray.length;i++){
+                        var id=cArray[i].trim();
+                        that.arr.unshift(id)
+                    }
+
+                    
+                },
+                addAccessCount() {
+                    var that = this;
+                    axios.get("/api/setAccessCount/" + key)
+                        .then(function (res) {
+                           that.count = res.data.data.count
+                        })
+                },
+                //查询指定页数
+                searchReload(pages) {
+                    var that = this;
+                    axios.get("/main/searchPage/" + key + "/" + pages + "/" + pageSize)
+                        .then(function (response) {
+                            console.log(response.data.data.list.records);
+                            that.searchList = response.data.data.list.records;
+                            that.pagePrint = '第' + page + '页';
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败,请稍后再试");
+                        })
+                },
+                //查询留言
+                search: function () {
+                    var that = this;
+                    let n = document.getElementById("searchs").value;
+                    if (n == '') {
+                        layer.msg("参数不能为空")
+                        return false;
+                    }
+                    axios.get("/main/searchKeyword/" + n + "/" + key + "/" + 1 + "/" + pageSize)
+                        .then(function (response) {
+                            console.log(response.data.data.list.records)
+                            that.searchList = response.data.data.list.records
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败[909]");
+                        })
+                },
+                //查询第一页所有留言--首页--打开运行
+                searchAll: function () {
+                    var that = this;
+                    axios.get("/main/searchPage/" + key + "/" + 1 + "/" + pageSize)
+                        .then(function (response) {
+                            console.log(response.data.data.list.records);
+                            that.searchList = response.data.data.list.records;
+                            // 跳转第一页
+                            page = 1;
+                            that.pagePrint = '第' + page + '页';
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败[909]");
+                        })
+                },
+                // 下一页
+                searchPagego: function () {
+                    var that = this;
+                    page = page + 1;
+                    axios.get("/main/searchPage/" + key + "/" + page + "/" + pageSize)
+                        .then(function (response) {
+                            console.log(response.data.data.list.records)
+                            list1 = response.data.data.list.records
+                            if (list1.length == 0) {
+                                layer.msg("这已经是最后一页了")
+                                page = page - 1
+                            } else {
+                                // 下一页页数更新
+                                that.pagePrint = '第' + page + '页'
+                                that.searchList = response.data.data.list.records
+                                //返回顶部
+                                document.body.scrollTop = 0;
+                                document.documentElement.scrollTop = 0;
+                            }
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败[909]");
+                        })
+                },
+                // 上一页
+                searchPageTop: function () {
+                    var that = this;
+                    page = page - 1
+                    axios.get("/main/searchPage/" + key + "/" + page + "/" + pageSize)
+                        .then(function (response) {
+                            console.log(response.data.data.list.records)
+                            list1 = response.data.data.list.records
+                            if (page <= 0) {
+                                page = 1
+                                layer.msg("这已经是第一页了")
+                            } else {
+                                // 上一页页数更新
+                                that.pagePrint = '第' + page + '页'
+                                that.searchList = response.data.data.list.records
+                                //返回顶部
+                                document.body.scrollTop = 0;
+                                document.documentElement.scrollTop = 0;
+                            }
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败[909]");
+                        })
+                },
+                // 转到尾页
+                searchPageBottom: function () {
+                    var that = this;
+                    axios.get("/main/searchPage/" + key + "/" + page + "/" + pageSize)
+                        .then(function (response) {
+                            maxPage = response.data.data.list.pages;
+                            console.log("最大页数：" + response.data.data.list.pages);
+                            if (maxPage == page) {
+                                layer.msg("这已经是最后一页了");
+                            } else {
+                                // 获取尾页内容
+                                axios.get("/main/searchPage/" + key + "/" + maxPage + "/" + pageSize).then(function (res) {
+                                    // 设置页数为最大页数
+                                    page = maxPage
+                                    // 尾页页数更新
+                                    that.pagePrint = '第' + page + '页';
+                                    that.searchList = res.data.data.list.records;
+                                    // 提示一下
+                                    layer.msg("已成功跳转到尾页");
+                                    //返回顶部
+                                    document.body.scrollTop = 0;
+                                    document.documentElement.scrollTop = 0;
+                                })
+                            }
+                        })
+                        .catch(function (err) {
+                            layer.msg("留言查询失败[909]");
+                        })
+                },
+                // 跳转按钮
+                searchJump(tiaoZhuanInputValue) {
+                    var that = this;
+                    if (tiaoZhuanInputValue == '' | tiaoZhuanInputValue == null) {
+                        layer.msg("请输入或选择内容");
+                        // 焦点到选择框
+                        document.getElementById("tiaoZhuanInput").focus();
+                    } else if (tiaoZhuanInputValue == page) {
+                        layer.msg("已经在第" + tiaoZhuanInputValue + "页了");
+                    } else {
+                        axios.get("/main/searchPage/" + key + "/" + tiaoZhuanInputValue + "/" + pageSize)
+                            .then(function (response) {
+                                console.log(response.data.data.list.records);
+                                maxPage = response.data.data.list.pages;
+                                if (tiaoZhuanInputValue > maxPage || tiaoZhuanInputValue < 1) {
+                                    layer.msg("页面不存在，请重新选择", { icon: 5 })
+                                    // 焦点到选择框
+                                    document.getElementById("tiaoZhuanInput").focus();
+                                } else {
+                                    // 页数更新
+                                    page = Number(tiaoZhuanInputValue);
+                                    this.page = page
+                                    that.pagePrint = '第' + page + '页';
+                                    that.searchList = response.data.data.list.records;
+                                    //返回顶部
+                                    document.body.scrollTop = 0;
+                                    document.documentElement.scrollTop = 0;
+                                }
+                            })
+                            .catch(function (err) {
+                                layer.msg("留言查询失败[909]");
+                            })
+                    }
+                }
+
+
+
+                //     //增加留言
+                //     addcontext:function(){
+                //         let name = document.getElementById("name").value;
+                //         let title = document.getElementById("title").value;
+                //         let context = document.getElementById("context").value;
+
+
+                //         const params = new URLSearchParams();
+
+                //         params.append('name', name)
+                //         params.append('title', title)
+                //         params.append('context', context)
+                //         temp = JSON.stringify(params);
+                //         axios.post("http://localhost:8080/main/insert",temp,{
+                //     headers: {
+                //        'content-type': 'application/json;charset=UTF-8',
+                //     }
+                //   })
+                //         .then(function(response){
+                //            alert(response.data.code)
+                //         })
+                //         .catch(function(err){
+                //             alert("失败")
+                //         })
+                //     }
+            }
+        })
+    </script>
+    <script>
+        function addcontexts() {
+            let name = document.getElementById("name").value;
+            let emails = document.getElementById("email").value;
+            let context = document.getElementById("context").value;
+            if (name == '') {
+                layer.msg("名字不能为空")
+                return false;
+            } else if (emails == '') {
+                layer.msg("邮箱不能为空")
+                return false;
+            } else if (context == '') {
+                layer.msg("留言内容不能为空")
+                return false;
+            }
+            //邮箱格式判断
+            if (!emails.match(/^\w+@\w+\.\w+$/i)) {
+                layer.msg("邮箱格式有误")
+                return false;
+            }
+            $.ajax({
+                url: "https://api.hh2022.cn/main/insert",
+                type: "post",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({ "name": name, "email": emails, "context": context, "uuid": key }),
+                success: function (data) {
+                    if (data.code === 200) {
+                        addCookieById("name",name)
+                        addCookieById("email",emails)
+                        swal("", "留言成功", "success");
+                        searchAll();
+                        //播放音乐
+                        var audio = document.getElementById("bgMusic");
+                        audio.currentTime = 0;
+                        audio.play();
+
+                    } else {
+                        alert("留言失败")
+                    }
+                }
+            })
+            reset()
+        }
+
+        // 重置按钮
+        function reset() {
+            let name = document.getElementById('name');
+            let title = document.getElementById('email');
+            let context = document.getElementById('context');
+            name.value = '';
+            title.value = '';
+            context.value = '';
+        }
+
+        //判断是否为手机
+        function IsPhone() {
+            //获取浏览器navigator对象的userAgent属性（浏览器用于HTTP请求的用户代理头的值）
+            var info = navigator.userAgent;
+            //通过正则表达式的test方法判断是否包含“Mobile”字符串
+            var isPhone = /mobile/i.test(info);
+            //如果包含“Mobile”（是手机设备）则返回true
+            return isPhone;
+        }
+      
+        //获取上次的留言身份信息
+        function getUserInfoCache(){
+            var name = getCookie("name")
+            var email = getCookie("email")
+            var cArrayName=name.split(",");
+            var cArrayEmail=email.split(",");
+            for(var i=0;i<cArrayName.length;i++){
+                var names =cArrayName[i].trim();
+                document.getElementById("name").value = names
+            }
+            for(var i=0;i<cArrayEmail.length;i++){
+                var emails =cArrayEmail[i].trim();
+                document.getElementById("email").value = emails
+            } 
+        }
+
+        //加载动画
+        function loading_bestxiao() {
+            var div_loading_xiao_bestxiao = document.createElement('div');
+            div_loading_xiao_bestxiao.className = 'loading_xiao_bestxiao';
+            div_loading_xiao_bestxiao.innerHTML = `<div class="loading_box_xiao_bestxiao"><div class="loading_up_xiao_bestxiao"></div><div class="loading_down_xiao_bestxiao"></div></div><style>body{width:100vw;height:100vh;overflow:hidden}.loading_xiao_bestxiao{position:absolute;width:100vw;height:100vh;top:0px;left:0px;z-index:999999999999;background:#000;display:flex;justify-content:center;align-items:center}.loading_box_xiao_bestxiao{width:200px;height:200px;position:relative;display:flex;justify-content:center;align-items:center;flex-direction:column}.loading_up_xiao_bestxiao{position:absolute;width:100%;height:100%;border-radius:30px;z-index:2;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.2);backdrop-filter:blur(5px);animation:load_xiao_bestxiao 2s ease-in-out infinite}.loading_down_xiao_bestxiao{position:absolute;width:100%;height:100%;border-radius:30px;z-index:1;filter:blur(1px);background:linear-gradient(135deg,#1afbf0,#da00ff);animation:loadin_xiao_bestxiao 8s ease-in-out infinite}@keyframes load_xiao_bestxiao{from{transform:rotate(0deg)}to{transform:rotate(90deg)}}@keyframes loadin_xiao_bestxiao{25%{transform:rotate(-90deg)}50%{transform:rotate(-180deg)}75%{transform:rotate(-270deg)}100%{transform:rotate(-360deg)}}</style>`;
+            document.body.appendChild(div_loading_xiao_bestxiao);
+            window.onload = function () {
+                //判断是否为手机
+                let Phone = IsPhone();
+                if (Phone == true) {
+                    document.getElementById("dl-all").style.display = "none"
+                }
+                document.body.removeChild(div_loading_xiao_bestxiao);
+                searchAll();
+                addAccessCount();
+                initdz();
+                sweetAlert("欢迎来到留言板 \n项目qq群：496301073");
+                //获取上次的留言身份信息
+                getUserInfoCache()
+               
+            }
+        }
+        loading_bestxiao()
+        
+    </script>
+
+
+    <script>
+        /*
+* 获取特定cookie的值
+* @param    cookie键
+* @return   cookie该键对应的值
+* */
+function getCookie(cname){
+    var name=cname+"=";
+    var ca=document.cookie.split(';');
+    for(var i=0;i<ca.length;i++){
+        var c=ca[i].trim();
+        if(c.indexOf(name)==0)
+            return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
+/*
+* 判断cookie键中是否有某个资源的id
+* @param    cookie键
+* @param    查询资源id  
+* @return   存在返回true，否则返回""
+* */
+function getCookieById(cname,id){
+    var name=cname+"=";
+    var ca=document.cookie.split(';');
+    var cValue="";
+    for(var i=0;i<ca.length;i++){
+        var c=ca[i].trim();
+        if(c.indexOf(name)==0)
+            cValue=c.substring(name.length,c.length);
+    }
+    if(cValue!=""){
+        var cArray=cValue.split(",");
+        for(var i=0;i<cArray.length;i++){
+            var c=cArray[i].trim();
+            if(c.indexOf(id)==0){
+                return true;
+            }
+        }
+    }
+    return "";
+}
+
+
+/*
+* 添加某个资源id到cookie键中
+* @param    cookie键名
+* @param    资源id
+* @param    cookie过期时间
+* */
+function addCookieById(cname,id,exdays){
+    var cvalue=getCookie(cname);
+    if(cvalue==""){
+        cvalue=id;
+    }else {
+        var cArray=cvalue.split(",");
+        var flag=0;
+        for(var i=0;i<cArray.length;i++){
+            var c=cArray[i].trim();
+            if(c.indexOf(id)==0){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==0) {
+            cvalue += "," + id;
+        }
+    }
+
+    var d=new Date();
+    d.setTime(d.getTime()+(exdays*24*60*60*1000));
+    var expires="expires="+d.toGMTString();
+    document.cookie=cname+"="+cvalue+"; "+expires;
+}
+    </script>
+
+    <script src="sakuraPlus.js"></script>
+    <script src="layer/layer.js"></script>
+    <!-- 看板娘 -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget/autoload.js"></script>
+</body>
+
+</html>
